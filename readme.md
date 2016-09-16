@@ -88,21 +88,24 @@ $ falsealarm -h
 
   Usage: falsealarm [options] <files...>
 
-  Firebase request runner, debugger and simulator.
+  Firebase request runner and debugger.
 
   Options:
 
     -h, --help                 output usage information
     -V, --version              output the version number
+    -s, --simulate             Simulate write operations, do not perform actual writes. Note: this makes requrest slow.
     -b, --bail                 Exit with an error code on the first failed test.
     -c, --config [file]        Config/params file (js or json) path
     -u, --uid <string>         Firebase uid to simulate
     -o, --operation <op>       Check operation: read, write, update
+    -a, --app <db name>        Firebase db name
     -p, --path <path/to/node>  Firebase path to data
     -d, --data [data]          Data to try, defaults to null
 
-  <files...> are json or js files exporting parameters named above.
+  <files...> are json or js files exporting parameters named below.
   Example: falsealarm -c path/to/config.json path/to/test/file.js
+  See an example setup in the examples folder
 ```
 
 The recommended approach is to have a js or json file with your app name and secret as a config, 
