@@ -1,0 +1,18 @@
+{
+  "rules": {
+    
+   	"detectives":{      
+      ".read": "true",
+      "$did": {
+        
+        ".write": "auth.uid==$did && $did==newData.child('detectiveId').val()"
+      }
+    },
+    "singlestickLevels": {      
+        "$did": {
+					".read": "auth!=null",
+        	".write": "auth.uid==$did"
+        }
+    }
+  }
+}
