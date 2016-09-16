@@ -8,10 +8,10 @@ A utility for simulating Firebase requests.
 - works as a nodejs library 
 - or through a clean CLI interface
 
-## Shortcomings
+## Two Important Notes
 
-- Unlike the official simulator, falsealarm actually writes to the database.
-- The package is a patch until the Firebase crew make it obsolete, so it's not built with longevity or special reliability in mind. 
+- Passing the `simulate` flag makes the tests _much_ slower, therefore it is disabled. Pass `-s` or `--simulate` to enabled.
+- Neither this project nor its creator are affiliated with Firebase.
 
 ## Install
 
@@ -70,6 +70,17 @@ Attempt to write Sparse data to /  /: /detectives: /detectives/6biFtd1XO1SJFbvCY
 
 ```
 
+## Required Parameters
+
+The required parameters for a test, however passed (conflig, cli or test files), are:
+
+- app: app name, not the full URL
+- secret: your db secret
+- uid: auth uid
+- operation: one of read write push update 
+- path: path to data node, root by default
+- data: data payload, null by default
+
 ## CLI
 
 ```sh
@@ -77,7 +88,7 @@ $ falsealarm -h
 
   Usage: falsealarm [options] <files...>
 
-  Firebase request runner and debugger.
+  Firebase request runner, debugger and simulator.
 
   Options:
 

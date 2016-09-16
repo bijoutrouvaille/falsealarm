@@ -7,15 +7,18 @@ args
   .version(require('../package.json').version)
   .description('Firebase request runner and debugger.')
   .usage('[options] <files...>')
+  .option('-s, --simulate', 'Simulate write operations, do not perform actual writes. Note: this makes requrest slow.')
   .option('-b, --bail', 'Exit with an error code on the first failed test.')
   .option('-c, --config [file]', 'Config/params file (js or json) path')
   .option('-u, --uid <string>', 'Firebase uid to simulate')
   .option('-o, --operation <op>', 'Check operation: read, write, update', /^(read|write|update)$/i)
+  .option('-a, --app <db name>', 'Firebase db name')
   .option('-p, --path <path/to/node>', 'Firebase path to data', '/')
   .option('-d, --data [data]', 'Data to try, defaults to null', JSON.parse, 'null')
   .on('--help', function(){
-    console.log('  <files...> are json or js files exporting parameters named below.')
+    console.log('  <files...> are json or js files exporting parameters named below.');
     console.log('  Example: falsealarm -c path/to/config.json path/to/test/file.js');
+    console.log('  See an example setup in the examples folder');
   })
   .parse(process.argv)
 
