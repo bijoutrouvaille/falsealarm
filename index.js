@@ -49,11 +49,11 @@ module.exports = function(config) {
         json += tail[i]
         try { JSON.parse(json); break; } catch (e) {}
       }
+      var rawText = text.replace('with auth=','').replace(json,'')
       return {
         auth: JSON.parse(json),
-        text: text
-          .replace('with auth=','')
-          .replace(json,'')
+        rawText: rawText,
+        text: rawText
           .replace(/=\> (false)/ig,"\n=> \033[31m$1\033[0m\n")
           .replace(/=\> (true)/ig,"\n=> \033[34m$1\033[0m\n")
           .replace(/(\<no rules\>)/ig, "\033[31m$1\033[0m\n")
@@ -71,7 +71,7 @@ module.exports = function(config) {
         status: res.status,
         
         error: error,
-        success: !error,
+        success: !error && (res.status < 400),
         path: path,
         operation: p.operation,
         method: method
