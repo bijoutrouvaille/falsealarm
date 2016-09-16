@@ -66,12 +66,13 @@ module.exports = function(config) {
       var error = 
         extractAuth(headers)
       delete headers['x-firebase-auth-debug']
+      var status = res ? res.status : e ? (e.status || e.res && e.res.status || -1) : -1
       return {
         headers,
-        status: res.status,
+        status: status,
         
         error: error,
-        success: !error && (res.status < 400),
+        success: !error && (status < 400),
         path: path,
         operation: p.operation,
         method: method
