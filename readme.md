@@ -8,6 +8,16 @@ A utility for simulating Firebase requests.
 - works as a nodejs library 
 - or through a clean CLI interface
 
+## Install
+
+For CLI,
+
+`npm install -g falsealarm`
+
+For library use,
+
+`npm install falsealarm`
+
 ## Examples
 
 Examples are included in the examples folder.
