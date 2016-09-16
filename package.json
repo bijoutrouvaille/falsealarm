@@ -1,11 +1,10 @@
 {
   "name": "falsealarm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Firebase Simulator Library and CLI Utility",
-  "repository" :
-  { 
-    "type" : "git",
-    "url" : "https://github.com/bijoutrouvaille/falsealarm.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bijoutrouvaille/falsealarm.git"
   },
   "main": "index.js",
   "scripts": {
