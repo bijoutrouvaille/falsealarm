@@ -8,6 +8,11 @@ A utility for simulating Firebase requests.
 - works as a nodejs library 
 - or through a clean CLI interface
 
+## Shortcomings
+
+- Unlike the official simulator, falsealarm actually writes to the database.
+- The package is a patch until the Firebase crew make it obsolete, so it's not built with longevity or special reliability in mind. 
+
 ## Install
 
 For CLI,
