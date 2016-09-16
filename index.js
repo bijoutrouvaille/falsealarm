@@ -10,18 +10,19 @@ var request = require('superagent')
 module.exports = function(config) {
   var conf = config
   if (config.config) try {
-    conf = Object.assign({}, config, require(config.config))
+    var configPath = require('resolve-path')(config.config)
+    conf = Object.assign({}, config, require(configPath))
   } catch (e) {
     console.log('config file '+config.config+' does not exist');
   }
 
   var FirebaseTokenGenerator = require("firebase-token-generator");
   var tokenGenerator = new FirebaseTokenGenerator(conf.secret);
-  var token = tokenGenerator.createToken({
-    provider: conf.provider || 'anonymous', 
-    uid: conf.uid }, { debug: true });
-
-  var url = "https://"+conf.app+".firebaseio.com/" + (conf.path || '') + '.json?auth='+token
+  function genToken(uid, provider) {
+    return tokenGenerator.createToken({
+    provider: provider || 'anonymous', 
+    uid: uid }, { debug: true });
+  }
 
 
   var ops = {read: 'GET', write: 'PUT', push: 'POST', update: 'PATCH'}
@@ -33,14 +34,64 @@ module.exports = function(config) {
       params = {}
     }
     params = params || {}
-    callback = callback || function(err, body) { console.log('request finished', error, body) }
+    callback = callback || function(results) {
+      console.log(results)
+    }
 
-    function done(e,d) { callback (e, d ? d.text : d) }
-    var p = Object.assign({}, conf, params)
-  
     
-    var r = request(ops[p.operation], url)
-    if (p.data) r.send(p.data)
+
+    function extractAuth(headers) {
+      var text = headers && headers['x-firebase-auth-debug'] 
+      if (!text) return null;
+      var tail = text.replace(/.*?auth=/i,'')
+      var json = ""
+      for (var i in tail) {
+        json += tail[i]
+        try { JSON.parse(json); break; } catch (e) {}
+      }
+      return {
+        auth: JSON.parse(json),
+        text: text
+          .replace('with auth=','')
+          .replace(json,'')
+          .replace(/=\> (false)/ig,"\n=> \033[31m$1\033[0m\n")
+          .replace(/=\> (true)/ig,"\n=> \033[34m$1\033[0m\n")
+          .replace(/(\<no rules\>)/ig, "\033[31m$1\033[0m\n")
+          .replace(/(\/ \/)/g, '\n\n$1')
+      }
+    }
+    function extractDebug(e, res, body) {
+      console.dir(url)
+      var headers = e && e.response && e.response.headers || {}
+      var error = 
+        extractAuth(headers)
+      delete headers['x-firebase-auth-debug']
+      return {
+        headers,
+        status: res.status,
+        
+        error: error,
+        success: !error,
+        path: path,
+        operation: p.operation,
+        method: method
+      }
+    }
+    function done(e, res, body) { callback (extractDebug(e, res, body)) }
+
+    var p = Object.assign({}, conf, params)
+    var token = genToken(p.uid, p.provider)
+    var path = '/' + (p.path || '').trim().replace(/^\/+/,'').replace(/\.json$/i,'') + '.json'
+    var url = "https://"+p.app+".firebaseio.com" + path + '?auth='+token
+    var method = ops[p.operation]
+
+  
+    var r = request(method, url)
+    if (p.data) {
+      r.send(JSON.stringify(p.data))
+      r.type('json')
+    }
+
     r.end(done)
   }
 }
