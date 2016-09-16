@@ -57,8 +57,8 @@ Attempt to write Sparse data to /  /: /detectives: /detectives/6biFtd1XO1SJFbvCY
 
 ## CLI
 
-```
-falsealarm -h                                                                           code/web/falsealarm  9:59  [15]
+```sh
+$ falsealarm -h
 
   Usage: falsealarm [options] <files...>
 
