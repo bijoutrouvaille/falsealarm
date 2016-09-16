@@ -90,7 +90,7 @@ $ falsealarm -h
     -p, --path <path/to/node>  Firebase path to data
     -d, --data [data]          Data to try, defaults to null
 
-  <files...> are json or js files exporting parameters named below.
+  <files...> are json or js files exporting parameters named above.
   Example: falsealarm -c path/to/config.json path/to/test/file.js
 ```
 
