@@ -1,6 +1,6 @@
 {
   "name": "falsealarm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Firebase Simulator Library and CLI Utility",
   "repository": {
     "type": "git",
