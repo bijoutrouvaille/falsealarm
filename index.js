@@ -19,9 +19,10 @@ module.exports = function(config) {
   var FirebaseTokenGenerator = require("firebase-token-generator");
   var tokenGenerator = new FirebaseTokenGenerator(conf.secret);
   function genToken(uid, provider, simulate) {
+    if (!uid) throw new Error('uid not provided to token generator')
     return tokenGenerator.createToken({
-    provider: provider || 'anonymous', 
-    uid: uid }, { debug: true, simulate: simulate===true});
+      provider: provider || 'anonymous', 
+      uid: uid }, { debug: true, simulate: simulate===true});
   }
 
 
@@ -78,9 +79,15 @@ module.exports = function(config) {
         method: method
       }
     }
-    function done(e, res, body) { callback (extractDebug(e, res, body)) }
+    function done(e, res, body) { callback (null, extractDebug(e, res, body)) }
 
     var p = Object.assign({}, conf, params)
+
+    var notFound = ['uid', 'secret', 'app', 'operation'].find(key=>!p[key])
+    if (notFound) {
+      return callback('parameter `'+notFound+'` was not provided')
+    }
+
     var token = genToken(p.uid, p.provider, p.simulate)
     var path = '/' + (p.path || '').trim().replace(/^\/+/,'').replace(/\.json$/i,'') + '.json'
     var url = "https://"+p.app+".firebaseio.com" + path + '?auth='+token

@@ -23,7 +23,11 @@ args
   .parse(process.argv)
 
 
-function print(results) {
+function print(error, results) {
+  if (error) {
+    console.log(error);
+    process.exit(2)
+  }
   var o = Object.assign({}, results)
   if (o.error) {
     console.log(o.error.text)
