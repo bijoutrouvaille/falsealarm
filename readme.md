@@ -126,11 +126,15 @@ If you choose to follow the recommendation, you would run it like so,
 // initialize
 var sim = require('falsealarm')(configParamsObject)
 // perform any number of calls with the initialized simulator
-sim(testParamsObject, function(results) {
+sim(testParamsObject, function(error, results) {
   if (results.success) ...
   else ...
 })
 ```
+
+Simulation's callback function passes two arguments: error and results. The first arguments
+will inform you if you have not passed all required paramters. `error` will be null if the
+simulation took place, even if the read/write did not succed.
 
 ## License
 
