@@ -10,7 +10,7 @@ A utility for simulating Firebase requests.
 
 ## Two Important Notes
 
-- Passing the `simulate` flag makes the tests _much_ slower, therefore the simulation is disabled by default. Pass `-s` or `--simulate` to enable it.
+- Passing the `simulate` flag makes the tests _much_ slower and may even break the operation with a strange error. It is marked "internal only," wherever it was documented, therefore the simulation is disabled by default, and *write operations actually write to the database*. Pass `-s` or `--simulate` to try simulating anyway.
 - Neither this project nor its creator are affiliated with Firebase.
 
 ## Install
