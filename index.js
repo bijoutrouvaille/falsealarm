@@ -1,12 +1,6 @@
 var fs = require('fs')
 var request = require('superagent')
-// config should contain keys 
-//    app: name of the app, e.g. popping-heat-2900 
-//    uid: firebase uid of the simulated
-//    secret: app secret
-// it can optionally contain
-//    config: path to js or json file with all the other values
-//    provider: default is 'anonymous'
+
 module.exports = function(config) {
   var conf = config
   if (config.config) try {
@@ -61,14 +55,16 @@ module.exports = function(config) {
           .replace(/(\/ \/)/g, '\n\n$1')
       }
     }
-    function extractDebug(e, res, body) {
-      console.dir(url)
+    function extractDebug(e, res, body, token) {
+
       var headers = e && e.response && e.response.headers || {}
+
       var error = 
         extractAuth(headers)
       delete headers['x-firebase-auth-debug']
       var status = res ? res.status : e ? (e.status || e.res && e.res.status || -1) : -1
       return {
+        token,
         headers,
         status: status,
         
@@ -79,16 +75,18 @@ module.exports = function(config) {
         method: method
       }
     }
-    function done(e, res, body) { callback (null, extractDebug(e, res, body)) }
+    function done(e, res, body) { callback (null, extractDebug(e, res, body, token)) }
+    function notFound(key) { callback('parameter `'+key+'` was not provided') }
 
     var p = Object.assign({}, conf, params)
 
-    var notFound = ['uid', 'secret', 'app', 'operation'].find(key=>!p[key])
-    if (notFound) {
-      return callback('parameter `'+notFound+'` was not provided')
-    }
-
+    if (!p.uid) return notFound('uid')
     var token = genToken(p.uid, p.provider, p.simulate)
+    if (p.generateToken) return callback(null, {token})
+
+    var missing = ['uid', 'secret', 'app', 'operation'].find(key=>!p[key])
+    if (missing) return notFound(missing)
+
     var path = '/' + (p.path || '').trim().replace(/^\/+/,'').replace(/\.json$/i,'') + '.json'
     var url = "https://"+p.app+".firebaseio.com" + path + '?auth='+token
     var method = ops[p.operation]
